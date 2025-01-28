@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { db } from './firebase'; // Ensure db is imported correctly
+import { db } from './firebase';
 import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from "firebase/firestore";
 
 const App = () => {
     const [tasks, setTasks] = useState([]);
-    const [taskName, setTaskName] = useState("");  // State to handle task input
+    const [taskName, setTaskName] = useState("");
 
-    // Fetch tasks from Firestore
     useEffect(() => {
         const fetchTasks = async () => {
             try {
@@ -24,7 +23,6 @@ const App = () => {
         fetchTasks();
     }, []);
 
-    // Add task to Firestore
     const addTask = async () => {
         if (taskName.trim()) {
             try {
@@ -32,14 +30,13 @@ const App = () => {
                     name: taskName
                 });
                 setTasks([...tasks, { id: docRef.id, name: taskName }]);
-                setTaskName(""); // Clear input after adding
+                setTaskName("");
             } catch (error) {
                 console.error("Error adding task: ", error);
             }
         }
     };
 
-    // Update task in Firestore
     const updateTask = async (id, newName) => {
         try {
             const taskDoc = doc(db, 'tasks', id);
@@ -55,7 +52,6 @@ const App = () => {
         }
     };
 
-    // Delete task from Firestore
     const deleteTask = async (id) => {
         try {
             const taskDoc = doc(db, 'tasks', id);
@@ -70,7 +66,6 @@ const App = () => {
         <div>
             <h1>Task List</h1>
 
-            {/* Input for new task */}
             <input
                 type="text"
                 value={taskName}
@@ -79,13 +74,11 @@ const App = () => {
             />
             <button onClick={addTask}>Add Task</button>
 
-            {/* Displaying tasks */}
             <ul>
                 {tasks.map((task) => (
                     <li key={task.id}>
                         <span>{task.name}</span>
 
-                        {/* Update task */}
                         <button onClick={() => {
                             const newName = prompt("Edit task name:", task.name);
                             if (newName) {
@@ -95,7 +88,6 @@ const App = () => {
                             Edit
                         </button>
 
-                        {/* Delete task */}
                         <button onClick={() => deleteTask(task.id)}>
                             Delete
                         </button>
